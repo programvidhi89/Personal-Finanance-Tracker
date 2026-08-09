@@ -1,6 +1,12 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
+// Initialize Axios header immediately on script load to prevent race conditions on hard refresh
+const initialToken = localStorage.getItem('jwt_token');
+if (initialToken) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`;
+}
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
