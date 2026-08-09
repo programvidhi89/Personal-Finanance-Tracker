@@ -43,4 +43,12 @@ public class BudgetController {
         repository.save(budget);
         return budget;
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteBudget(@PathVariable Long id) {
+        Long userId = getUserId();
+        if (userId != null) {
+            repository.delete(id, userId);
+        }
+    }
 }

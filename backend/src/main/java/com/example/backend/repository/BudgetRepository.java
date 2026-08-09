@@ -35,4 +35,9 @@ public class BudgetRepository {
         String sql = "INSERT INTO budgets (user_id, category, amount, month_year) VALUES (?, ?, ?, ?)";
         return jdbcTemplate.update(sql, budget.getUserId(), budget.getCategory(), budget.getAmount(), budget.getMonthYear());
     }
+
+    public int delete(Long id, Long userId) {
+        String sql = "DELETE FROM budgets WHERE id = ? AND user_id = ?";
+        return jdbcTemplate.update(sql, id, userId);
+    }
 }

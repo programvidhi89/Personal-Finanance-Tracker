@@ -37,6 +37,15 @@ function BudgetManager({ transactions }) {
     }
   };
 
+  const handleDeleteBudget = async (id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/budgets/${id}`);
+      setBudgets(budgets.filter(b => b.id !== id));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // Calculate spent amounts for the current month
   const currentMonthTransactions = transactions.filter(t => 
     t.type === 'EXPENSE' && t.transactionDate.startsWith(new Date().toISOString().slice(0, 7))
@@ -79,8 +88,15 @@ function BudgetManager({ transactions }) {
             const isExceeded = spent > budget.amount;
 
             return (
-              <div key={budget.id} style={{ background: 'var(--surface-color)', padding: '1.5rem', borderRadius: '12px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <div key={budget.id} style={{ background: 'var(--surface-color)', padding: '1.5rem', borderRadius: '12px', position: 'relative' }}>
+                <button 
+                  onClick={() => handleDeleteBudget(budget.id)}
+                  style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', opacity: 0.7 }}
+                  title="Delete Budget"
+                >
+                  ❌
+                </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', paddingRight: '2rem' }}>
                   <strong style={{ fontSize: '1.1rem' }}>{budget.category}</strong>
                   <span>₹{spent.toLocaleString()} / ₹{budget.amount.toLocaleString()}</span>
                 </div>
