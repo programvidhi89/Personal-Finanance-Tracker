@@ -45,4 +45,21 @@ public class AccountController {
         repository.save(account);
         return account;
     }
+
+    @PutMapping("/{id}")
+    public Account updateAccount(@PathVariable Long id, @RequestBody Account updatedAccount) {
+        Long userId = getUserId();
+        if (userId == null) throw new RuntimeException("Unauthorized");
+        
+        Account existingAccount = repository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        if (!existingAccount.getUserId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        
+        if(updatedAccount.getName() != null) existingAccount.setName(updatedAccount.getName());
+        if(updatedAccount.getType() != null) existingAccount.setType(updatedAccount.getType());
+        if(updatedAccount.getBalance() != null) existingAccount.setBalance(updatedAccount.getBalance());
+        
+        return repository.save(existingAccount);
+    }
 }

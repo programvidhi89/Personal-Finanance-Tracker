@@ -4,6 +4,7 @@ import axios from 'axios';
 function AccountsManager({ refreshTrigger }) {
   const [accounts, setAccounts] = useState([]);
   const [newAccount, setNewAccount] = useState({ name: '', type: 'BANK', balance: '' });
+  const [editingAccountId, setEditingAccountId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,15 +27,33 @@ function AccountsManager({ refreshTrigger }) {
     if (!newAccount.name) return;
     
     try {
-      const res = await axios.post(import.meta.env.VITE_API_BASE_URL + '/accounts', {
-        ...newAccount,
-        balance: parseFloat(newAccount.balance || 0)
-      });
-      setAccounts([...accounts, res.data]);
+      if (editingAccountId) {
+        const res = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/accounts/${editingAccountId}`, {
+          ...newAccount,
+          balance: parseFloat(newAccount.balance || 0)
+        });
+        setAccounts(accounts.map(acc => acc.id === editingAccountId ? res.data : acc));
+        setEditingAccountId(null);
+      } else {
+        const res = await axios.post(import.meta.env.VITE_API_BASE_URL + '/accounts', {
+          ...newAccount,
+          balance: parseFloat(newAccount.balance || 0)
+        });
+        setAccounts([...accounts, res.data]);
+      }
       setNewAccount({ name: '', type: 'BANK', balance: '' });
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleEditClick = (account) => {
+    setEditingAccountId(account.id);
+    setNewAccount({
+      name: account.name,
+      type: account.type,
+      balance: account.balance
+    });
   };
 
   const getIcon = (type) => {
@@ -61,8 +80,16 @@ function AccountsManager({ refreshTrigger }) {
             border: '1px solid rgba(255,255,255,0.05)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.5rem'
+            gap: '0.5rem',
+            position: 'relative'
           }}>
+            <button 
+              onClick={() => handleEditClick(acc)}
+              style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', opacity: 0.7 }}
+              title="Edit Account"
+            >
+              ✏️
+            </button>
             <div style={{ fontSize: '1.5rem' }}>{getIcon(acc.type)}</div>
             <div style={{ fontWeight: '600' }}>{acc.name}</div>
             <div style={{ fontSize: '1.2rem', color: acc.balance < 0 ? 'var(--expense-color)' : 'var(--income-color)' }}>
@@ -109,7 +136,24 @@ function AccountsManager({ refreshTrigger }) {
             onChange={(e) => setNewAccount({ ...newAccount, balance: e.target.value })}
           />
         </div>
-        <button type="submit" className="btn" style={{ width: 'auto' }}>Add Account</button>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button type="submit" className="btn" style={{ width: 'auto' }}>
+            {editingAccountId ? 'Update Account' : 'Add Account'}
+          </button>
+          {editingAccountId && (
+            <button 
+              type="button" 
+              className="btn" 
+              style={{ width: 'auto', background: 'rgba(255,255,255,0.1)' }}
+              onClick={() => {
+                setEditingAccountId(null);
+                setNewAccount({ name: '', type: 'BANK', balance: '' });
+              }}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );
