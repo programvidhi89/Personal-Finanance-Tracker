@@ -27,7 +27,7 @@ function TransactionForm({ onAdd, initialData, onCancel }) {
 
   useEffect(() => {
     // Fetch accounts to populate dropdown
-    axios.get('http://localhost:8080/api/accounts')
+    axios.get(import.meta.env.VITE_API_BASE_URL + '/accounts')
       .then(res => {
         setAccounts(res.data);
         if (res.data.length > 0) {

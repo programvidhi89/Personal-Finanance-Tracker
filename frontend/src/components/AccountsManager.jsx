@@ -12,7 +12,7 @@ function AccountsManager({ refreshTrigger }) {
 
   const fetchAccounts = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/api/accounts');
+      const res = await axios.get(import.meta.env.VITE_API_BASE_URL + '/accounts');
       setAccounts(res.data);
     } catch (err) {
       console.error(err);
@@ -26,7 +26,7 @@ function AccountsManager({ refreshTrigger }) {
     if (!newAccount.name) return;
     
     try {
-      const res = await axios.post('http://localhost:8080/api/accounts', {
+      const res = await axios.post(import.meta.env.VITE_API_BASE_URL + '/accounts', {
         ...newAccount,
         balance: parseFloat(newAccount.balance || 0)
       });

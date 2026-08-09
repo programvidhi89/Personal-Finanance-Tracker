@@ -12,7 +12,7 @@ function SavingsGoals() {
 
   const fetchGoals = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/api/goals');
+      const res = await axios.get(import.meta.env.VITE_API_BASE_URL + '/goals');
       setGoals(res.data);
     } catch (err) {
       console.error(err);
@@ -26,7 +26,7 @@ function SavingsGoals() {
     if (!newGoal.name || !newGoal.targetAmount) return;
     
     try {
-      const res = await axios.post('http://localhost:8080/api/goals', newGoal);
+      const res = await axios.post(import.meta.env.VITE_API_BASE_URL + '/goals', newGoal);
       setGoals([...goals, res.data]);
       setNewGoal({ name: '', targetAmount: '', deadline: '' });
     } catch (err) {
@@ -38,7 +38,7 @@ function SavingsGoals() {
     const amount = prompt("How much do you want to add to this goal?");
     if (amount && !isNaN(amount)) {
       try {
-        await axios.post(`http://localhost:8080/api/goals/${goalId}/add?amount=${amount}`);
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/goals/${goalId}/add?amount=${amount}`);
         // Optimistically update UI
         setGoals(goals.map(g => g.id === goalId ? { ...g, savedAmount: g.savedAmount + parseFloat(amount) } : g));
       } catch (err) {

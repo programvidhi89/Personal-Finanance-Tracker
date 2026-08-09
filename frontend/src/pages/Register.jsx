@@ -19,7 +19,7 @@ function Register() {
     setError('');
     
     try {
-      await axios.post('http://localhost:8080/api/auth/register', formData);
+      await axios.post(import.meta.env.VITE_API_BASE_URL + '/auth/register', formData);
       navigate('/login');
     } catch (err) {
       setError(err.response?.data || 'Failed to register. Please try again.');

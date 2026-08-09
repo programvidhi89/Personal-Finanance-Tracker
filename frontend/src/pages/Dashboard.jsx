@@ -9,7 +9,7 @@ import AnalyticsDashboard from '../components/AnalyticsDashboard';
 import AccountsManager from '../components/AccountsManager';
 import { AuthContext } from '../context/AuthContext';
 
-const API_URL = 'http://localhost:8080/api/transactions';
+const API_URL = import.meta.env.VITE_API_BASE_URL + '/transactions';
 
 function Dashboard() {
   const [transactions, setTransactions] = useState([]);

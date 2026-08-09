@@ -21,7 +21,7 @@ function Login() {
     setError('');
     
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', credentials);
+      const response = await axios.post(import.meta.env.VITE_API_BASE_URL + '/auth/login', credentials);
       login(response.data.token, response.data.username);
       navigate('/');
     } catch (err) {

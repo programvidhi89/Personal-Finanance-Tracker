@@ -12,7 +12,7 @@ function BudgetManager({ transactions }) {
 
   const fetchBudgets = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/api/budgets');
+      const res = await axios.get(import.meta.env.VITE_API_BASE_URL + '/budgets');
       setBudgets(res.data);
     } catch (err) {
       console.error(err);
@@ -26,7 +26,7 @@ function BudgetManager({ transactions }) {
     if (!newBudget.category || !newBudget.amount) return;
     
     try {
-      const res = await axios.post('http://localhost:8080/api/budgets', {
+      const res = await axios.post(import.meta.env.VITE_API_BASE_URL + '/budgets', {
         ...newBudget,
         monthYear: new Date().toISOString().slice(0, 7) // Current month '2026-08'
       });
