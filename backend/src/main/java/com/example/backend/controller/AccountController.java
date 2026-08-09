@@ -51,15 +51,16 @@ public class AccountController {
         Long userId = getUserId();
         if (userId == null) throw new RuntimeException("Unauthorized");
         
-        Account existingAccount = repository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
-        if (!existingAccount.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
+        Account existingAccount = repository.findByIdAndUserId(id, userId);
+        if (existingAccount == null) {
+            throw new RuntimeException("Account not found");
         }
         
         if(updatedAccount.getName() != null) existingAccount.setName(updatedAccount.getName());
         if(updatedAccount.getType() != null) existingAccount.setType(updatedAccount.getType());
         if(updatedAccount.getBalance() != null) existingAccount.setBalance(updatedAccount.getBalance());
         
-        return repository.save(existingAccount);
+        repository.updateAccount(existingAccount);
+        return existingAccount;
     }
 }

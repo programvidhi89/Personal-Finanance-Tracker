@@ -46,4 +46,9 @@ public class AccountRepository {
         String sql = "UPDATE accounts SET balance = balance + ? WHERE id = ? AND user_id = ?";
         return jdbcTemplate.update(sql, amountChange, id, userId);
     }
+
+    public int updateAccount(Account account) {
+        String sql = "UPDATE accounts SET name = ?, type = ?, balance = ? WHERE id = ? AND user_id = ?";
+        return jdbcTemplate.update(sql, account.getName(), account.getType(), account.getBalance(), account.getId(), account.getUserId());
+    }
 }
